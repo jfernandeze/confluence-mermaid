@@ -1,0 +1,42 @@
+modules:
+  macro:
+    - key: mermaid-diagram
+      title: Mermaid
+      description: Mermaid diagrams as code. Rendered in your browser, never sent anywhere.
+      resource: main
+      layout: block
+      categories:
+        - visuals
+        - development
+      unlicensedAccess:
+        - unlicensed
+        - anonymous
+      config:
+        resource: config
+        title: Edit diagram
+        openOnInsert: true
+        viewportSize: xlarge
+        parameters:
+          - identifier: source
+            type: string
+          - identifier: theme
+            type: string
+
+resources:
+  - key: main
+    path: static/view/dist
+  - key: config
+    path: static/config/dist
+
+app:
+  # Run `forge register` once — it replaces this id with yours.
+  id: ari:cloud:ecosystem::app/00000000-0000-0000-0000-000000000000
+  runtime:
+    name: nodejs22.x
+
+permissions:
+  # No scopes, no external fetch, no backend functions.
+  # Mermaid writes style="" on SVG nodes; Forge requires this declaration.
+  content:
+    styles:
+      - 'unsafe-inline'

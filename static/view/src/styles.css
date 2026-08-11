@@ -1,0 +1,69 @@
+:root {
+  color-scheme: light dark;
+  --bg: transparent;
+  --fg: #172b4d;
+  --muted: #626f86;
+  --danger: #ae2a19;
+  --danger-bg: #ffeceb;
+  --border: #dcdfe4;
+  --radius: 8px;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #c7d1db;
+    --muted: #8c9baa;
+    --danger: #fd9891;
+    --danger-bg: #42221f;
+    --border: #3b4754;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-width: 100%;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.shell {
+  width: 100%;
+  min-width: 100%;
+  padding: 4px 0;
+}
+
+.diagram {
+  width: 100%;
+  overflow: auto;
+}
+
+.diagram svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.state {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.state.error {
+  color: var(--danger);
+  background: var(--danger-bg);
+  border-color: transparent;
+  white-space: pre-wrap;
+}

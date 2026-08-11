@@ -1,0 +1,18 @@
+{
+  "name": "confluence-mermaid",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Free Forge macro that renders Mermaid diagrams client-side in Confluence Cloud",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "npm run build --prefix static/view && npm run build --prefix static/config",
+    "build:view": "npm run build --prefix static/view",
+    "build:config": "npm run build --prefix static/config",
+    "install:all": "npm install --prefix static/view && npm install --prefix static/config",
+    "deploy": "npm run build && forge deploy",
+    "lint": "forge lint"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
