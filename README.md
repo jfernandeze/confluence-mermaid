@@ -18,7 +18,7 @@ Built to share with the community: fork it, register your own Forge app id, depl
 ## Quick start (contributors / testers)
 
 ```bash
-git clone https://github.com/<your-user>/confluence-mermaid.git
+git clone https://github.com/jfernandeze/confluence-mermaid.git
 cd confluence-mermaid
 npm run install:all
 npm run build
@@ -38,6 +38,8 @@ forge install --upgrade
 ```
 
 > **App id:** the repo ships with a placeholder `app.id`. Everyone who deploys must run `forge register` (or use their own id). Keep personal app ids out of PRs unless you own the published app.
+
+Forks: change the clone URL to your fork, then follow the same steps.
 
 ## Usage
 
