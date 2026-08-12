@@ -19,6 +19,10 @@ function collectText(node) {
 
 function walkCodeBlocks(node, out) {
   if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) {
+    for (const child of node) walkCodeBlocks(child, out);
+    return;
+  }
   if (node.type === 'codeBlock') {
     out.push({
       language: (node.attrs?.language || '').toLowerCase(),
@@ -30,16 +34,33 @@ function walkCodeBlocks(node, out) {
   }
 }
 
+function asDocument(body) {
+  if (!body) return null;
+  if (Array.isArray(body)) {
+    return { type: 'doc', version: 1, content: body };
+  }
+  if (body.type === 'doc') return body;
+  if (Array.isArray(body.content)) {
+    return { type: 'doc', version: 1, content: body.content };
+  }
+  // Single node (e.g. one codeBlock / paragraph)
+  if (body.type) {
+    return { type: 'doc', version: 1, content: [body] };
+  }
+  return null;
+}
+
 /**
  * Prefer a ```mermaid code block from the bodied macro ADF.
  * Fall back to any code block, then to plain text in the body.
  * Preserves hardBreak nodes as newlines (required by Mermaid).
  */
 export function extractMermaidFromAdf(body) {
-  if (!body || typeof body !== 'object') return '';
+  const doc = asDocument(body);
+  if (!doc) return '';
 
   const blocks = [];
-  walkCodeBlocks(body, blocks);
+  walkCodeBlocks(doc, blocks);
 
   const mermaidBlock = blocks.find((block) => block.language === 'mermaid' && block.text.trim());
   if (mermaidBlock) return decodeEntities(mermaidBlock.text).trim();
@@ -47,14 +68,22 @@ export function extractMermaidFromAdf(body) {
   const anyBlock = blocks.find((block) => block.text.trim());
   if (anyBlock) return decodeEntities(anyBlock.text).trim();
 
-  const plain = collectText(body).trim();
+  const plain = collectText(doc).trim();
   return decodeEntities(plain);
 }
 
 export function readMacroSource(context) {
   const extension = context?.extension || {};
-  const fromBody = extractMermaidFromAdf(extension.macro?.body);
-  if (fromBody) return fromBody;
+  const candidates = [
+    extension.macro?.body,
+    extension.macro?.adf,
+    extension.body,
+  ];
+
+  for (const candidate of candidates) {
+    const source = extractMermaidFromAdf(candidate);
+    if (source) return source;
+  }
 
   const config = extension.config || {};
   if (typeof config.source === 'string' && config.source.trim()) {
