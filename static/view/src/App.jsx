@@ -1,42 +1,7 @@
 import { useEffect, useState } from 'react';
 import { view } from '@forge/bridge';
+import { readMacroSource } from '../../shared/extractMermaid.js';
 import { normalizeTheme, renderMermaid } from '../../shared/renderMermaid.js';
-
-function decodeEntities(value) {
-  if (!value || typeof value !== 'string') return '';
-  return value
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ');
-}
-
-function readConfig(context) {
-  const extension = context?.extension || {};
-  const candidates = [
-    extension.config,
-    extension.macro?.params,
-    extension.parameters?.config,
-    extension.parameters,
-  ].filter(Boolean);
-
-  for (const candidate of candidates) {
-    const source = candidate.source ?? candidate.Source;
-    if (typeof source === 'string' && source.trim()) {
-      return {
-        source: decodeEntities(source),
-        theme: candidate.theme ?? candidate.Theme,
-      };
-    }
-  }
-
-  return {
-    source: '',
-    theme: undefined,
-  };
-}
 
 export default function App() {
   const [status, setStatus] = useState({ kind: 'loading', message: 'Loading diagram…' });
@@ -48,15 +13,15 @@ export default function App() {
     async function load() {
       try {
         const context = await view.getContext();
-        const { source, theme: configTheme } = readConfig(context);
+        const source = readMacroSource(context);
+        let theme = context?.extension?.config?.theme;
 
-        let theme = configTheme;
         if (!theme || theme === 'default') {
           try {
             const colorMode = await view.theme?.getColorMode?.();
             if (colorMode === 'dark') theme = 'dark';
           } catch {
-            // Theme bridge is optional; keep configured/default theme.
+            // optional
           }
         }
 
@@ -67,7 +32,8 @@ export default function App() {
           setSvg('');
           setStatus({
             kind: 'empty',
-            message: 'No diagram yet. Edit this macro and paste Mermaid source.',
+            message:
+              'Add Mermaid source inside this macro body (a ```mermaid code block works best), then publish.',
           });
           return;
         }
@@ -84,7 +50,7 @@ export default function App() {
         if (!cancelled) {
           setStatus({
             kind: 'error',
-            message: err?.message || 'Failed to load macro configuration.',
+            message: err?.message || 'Failed to load macro content.',
           });
         }
       }

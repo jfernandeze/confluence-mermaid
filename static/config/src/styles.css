@@ -201,3 +201,35 @@ textarea {
   padding: 10px 12px;
   white-space: pre-wrap;
 }
+
+.layout.compact {
+  gap: 16px;
+  max-width: 520px;
+}
+
+.layout.compact .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.layout.compact .field select {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--fg);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.layout.compact code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.layout.compact .actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

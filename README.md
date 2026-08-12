@@ -5,9 +5,7 @@ Free, open-source **Atlassian Forge** macro for **Confluence Cloud** that render
 - No backend functions
 - No Confluence API scopes
 - No external network calls
-- Diagram source stays in the macro config on the page
-
-Built to share with the community: fork it, register your own Forge app id, deploy to your site, and iterate.
+- Diagram source lives in the **macro body** (ADF) — works for humans and AI/API inserts
 
 ## Requirements
 
@@ -39,22 +37,59 @@ forge install --upgrade
 
 > **App id:** the repo ships with a placeholder `app.id`. Everyone who deploys must run `forge register` (or use their own id). Keep personal app ids out of PRs unless you own the published app.
 
-Forks: change the clone URL to your fork, then follow the same steps.
-
-## Usage
+## Usage (humans)
 
 1. Edit a Confluence page.
 2. Type `/mermaid` and insert the **Mermaid** macro.
-3. Write diagram source (or keep the starter flowchart).
-4. Choose a theme and click **Save diagram**.
+3. Inside the macro body, add a Mermaid code block:
+
+````markdown
+```mermaid
+flowchart LR
+  A[Write Mermaid] --> B[Rendered in browser]
+```
+````
+
+4. Publish. Optional: open macro settings to pick a theme.
+
+## Usage (AI / Confluence API)
+
+Insert a **bodied** Forge macro whose body contains a `mermaid` code block. Example ADF shape:
+
+```json
+{
+  "type": "bodiedExtension",
+  "attrs": {
+    "layout": "default",
+    "extensionType": "com.atlassian.ecosystem",
+    "extensionKey": "ari:cloud:ecosystem::extension/<APP_ID>/<ENV_ID>/static/mermaid-diagram",
+    "parameters": {
+      "localId": "<uuid>",
+      "extensionId": "ari:cloud:ecosystem::extension/<APP_ID>/<ENV_ID>/static/mermaid-diagram",
+      "extensionTitle": "Mermaid"
+    }
+  },
+  "content": [
+    {
+      "type": "codeBlock",
+      "attrs": { "language": "mermaid" },
+      "content": [
+        { "type": "text", "text": "flowchart LR\n  A --> B" }
+      ]
+    }
+  ]
+}
+```
+
+Custom-config-only macros (source stored only in `parameters.config`) are unreliable via API and are no longer the primary path.
 
 ## Project layout
 
 ```
-manifest.yml          Forge app descriptor (zero scopes)
-static/shared/        Mermaid render helper (DOMPurify + mermaid)
+manifest.yml          Forge app descriptor (bodied macro, zero scopes)
+static/shared/        Mermaid render + ADF body extraction
 static/view/          Macro view (page render)
-static/config/        Macro editor modal (source + live preview)
+static/config/        Theme settings modal
 ```
 
 ## Privacy model

@@ -2,9 +2,10 @@ modules:
   macro:
     - key: mermaid-diagram
       title: Mermaid
-      description: Mermaid diagrams as code. Rendered in your browser, never sent anywhere.
+      description: Mermaid diagrams as code in the macro body. Rendered in your browser, never sent anywhere.
       resource: main
-      layout: block
+      # Bodied so humans and AI can put Mermaid source in the macro body (ADF/API-friendly).
+      layout: bodied
       categories:
         - visuals
         - development
@@ -13,12 +14,10 @@ modules:
         - anonymous
       config:
         resource: config
-        title: Edit diagram
-        openOnInsert: true
-        viewportSize: xlarge
+        title: Diagram settings
+        openOnInsert: false
+        viewportSize: small
         parameters:
-          - identifier: source
-            type: string
           - identifier: theme
             type: string
 
