@@ -65,8 +65,11 @@ The repo ships an Agent Skill that teaches models the exact ADF shape for this m
 | Canonical | [`skills/confluence-mermaid/SKILL.md`](./skills/confluence-mermaid/SKILL.md) |
 | Cursor | [`.cursor/skills/confluence-mermaid/SKILL.md`](./.cursor/skills/confluence-mermaid/SKILL.md) |
 | Claude Code | [`.claude/skills/confluence-mermaid/SKILL.md`](./.claude/skills/confluence-mermaid/SKILL.md) |
+| Team Marketplace plugin | [`plugins/confluence-mermaid/`](./plugins/confluence-mermaid/) |
 
 Copy the folder into `~/.cursor/skills/` or `~/.claude/skills/` to use it outside this repo. Invoke with `/confluence-mermaid` or let the agent pick it up from the description.
+
+**Company Cursor (admin):** import this GitHub repo as a Team Marketplace — see [docs/TEAM-CURSOR-MARKETPLACE.md](./docs/TEAM-CURSOR-MARKETPLACE.md).
 
 **Copy-paste prompt** (if you cannot load the skill):
 

@@ -1,0 +1,21 @@
+{
+  "name": "confluence-mermaid",
+  "displayName": "Confluence Mermaid",
+  "version": "1.0.0",
+  "description": "Agent skill to insert and update Mermaid diagrams in Confluence Cloud using the confluence-mermaid Forge macro (block extension + guestParams/config).",
+  "author": {
+    "name": "Jose Fernandez",
+    "email": "karruchero@hotmail.com"
+  },
+  "homepage": "https://github.com/jfernandeze/confluence-mermaid",
+  "repository": "https://github.com/jfernandeze/confluence-mermaid",
+  "license": "Apache-2.0",
+  "keywords": [
+    "confluence",
+    "mermaid",
+    "atlassian",
+    "forge",
+    "diagrams",
+    "adf"
+  ]
+}
