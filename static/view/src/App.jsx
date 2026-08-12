@@ -14,7 +14,9 @@ export default function App() {
       try {
         const context = await view.getContext();
         const source = readMacroSource(context);
-        let theme = context?.extension?.config?.theme;
+        let theme =
+          context?.extension?.config?.theme ||
+          context?.extension?.guestParams?.theme;
 
         if (!theme || theme === 'default') {
           try {

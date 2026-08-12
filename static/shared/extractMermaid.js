@@ -85,9 +85,20 @@ export function readMacroSource(context) {
     if (source) return source;
   }
 
-  const config = extension.config || {};
-  if (typeof config.source === 'string' && config.source.trim()) {
-    return decodeEntities(config.source).trim();
+  // Forge custom config + Connect-style guestParams (useful for API inserts)
+  const paramBags = [
+    extension.config,
+    extension.guestParams,
+    extension.parameters?.config,
+    extension.parameters?.guestParams,
+    extension.parameters,
+  ].filter(Boolean);
+
+  for (const bag of paramBags) {
+    const source = bag.source ?? bag.Source;
+    if (typeof source === 'string' && source.trim()) {
+      return decodeEntities(source).trim();
+    }
   }
 
   return '';
