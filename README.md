@@ -7,6 +7,16 @@ Free, open-source **Atlassian Forge** macro for **Confluence Cloud** that render
 - No external network calls
 - Diagram source lives in macro **config** / **guestParams** — works for humans and AI/API inserts
 
+<p align="center">
+  <img src="docs/screenshots/architecture.png" alt="Architecture flowchart rendered in Confluence Cloud" width="900" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/sequence.png" alt="Sequence diagram rendered in Confluence Cloud" width="440" />
+  &nbsp;
+  <img src="docs/screenshots/state.png" alt="State diagram rendered in Confluence Cloud" width="440" />
+</p>
+
 ## Requirements
 
 - Node.js 20+
