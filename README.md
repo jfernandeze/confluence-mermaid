@@ -5,7 +5,7 @@ Free, open-source **Atlassian Forge** macro for **Confluence Cloud** that render
 - No backend functions
 - No Confluence API scopes
 - No external network calls
-- Diagram source lives in the **macro body** (ADF) — works for humans and AI/API inserts
+- Diagram source lives in macro **config** / **guestParams** — works for humans and AI/API inserts
 
 ## Requirements
 
@@ -36,69 +36,147 @@ forge install --upgrade
 ```
 
 > **App id:** the repo ships with a placeholder `app.id`. Everyone who deploys must run `forge register` (or use their own id). Keep personal app ids out of PRs unless you own the published app.
+>
+> On many sites Forge **auto-upgrades** the installed app after `forge deploy` (admin shows *Up to date*). Use `forge install --upgrade` only if the site still shows an older version.
 
 ## Usage (humans)
 
 1. Edit a Confluence page.
 2. Type `/mermaid` and insert the **Mermaid** macro.
-3. Inside the macro body, add a Mermaid code block:
-
-````markdown
-```mermaid
-flowchart LR
-  A[Write Mermaid] --> B[Rendered in browser]
-```
-````
-
-4. Publish. Optional: open macro settings to pick a theme.
+3. In the config modal, paste Mermaid source and pick a theme.
+4. Save / publish.
 
 ## Usage (AI / Confluence API)
 
-Insert a **bodied** Forge macro whose body contains a `mermaid` code block.
+Insert a **block** Forge `extension` and put the Mermaid source in both `parameters.guestParams` and `parameters.config` (same fields the editor saves).
 
 Important: use the **short** `extensionKey` (no `ari:cloud:ecosystem::extension/` prefix). The full ARI form often yields `Error loading the extension!` when inserted via API.
 
 ```json
 {
-  "type": "bodiedExtension",
+  "type": "extension",
   "attrs": {
     "layout": "default",
     "extensionType": "com.atlassian.ecosystem",
     "extensionKey": "<APP_ID>/<ENV_ID>/static/mermaid-diagram",
-    "text": "Mermaid",
-    "localId": "<uuid>",
     "parameters": {
-      "layout": "bodiedExtension",
       "forgeEnvironment": "PRODUCTION",
-      "localId": "<uuid>",
       "extensionId": "ari:cloud:ecosystem::extension/<APP_ID>/<ENV_ID>/static/mermaid-diagram",
-      "extensionTitle": "Mermaid"
+      "extensionTitle": "Mermaid",
+      "guestParams": {
+        "theme": "neutral",
+        "source": "flowchart LR\n  A[API] --> B[SVG]"
+      },
+      "config": {
+        "theme": "neutral",
+        "source": "flowchart LR\n  A[API] --> B[SVG]"
+      }
     }
-  },
-  "content": [
-    {
-      "type": "codeBlock",
-      "attrs": { "language": "mermaid" },
-      "content": [
-        { "type": "text", "text": "flowchart LR\n  A --> B" }
-      ]
-    }
-  ]
+  }
 }
 ```
 
-For this deployed app on evalua production:
+For the published production install used in testing:
 
 - `APP_ID` = `efdf9273-2980-4c7b-9039-baf6371eb8da`
 - `ENV_ID` = `aa4638bc-29a8-4fd8-bbc9-634f11ccd440`
 
+Avoid `/` inside edge labels when possible (`A -->|REST ADF| B` is safer than `A -->|REST / ADF| B` with Mermaid 11).
+
+## Example diagrams
+
+These are the kinds of sources that work well for smoke-testing (paste into the config modal, or into `guestParams.source` / `config.source` via API).
+
+### Architecture flowchart (subgraphs)
+
+```mermaid
+flowchart TB
+  subgraph Authors
+    AI[AI Cursor]
+    Dev[Developer]
+  end
+
+  subgraph ConfluenceCloud[Confluence Cloud]
+    Page[Page ADF]
+    Macro[Forge Mermaid macro]
+    Editor[Config modal]
+  end
+
+  subgraph ForgeRuntime[Forge runtime]
+    Bridge[view.getContext]
+    ViewUI[Custom UI view]
+    MermaidLib[Mermaid.js]
+    Sanitize[DOMPurify]
+  end
+
+  subgraph BrowserOut[Browser]
+    SVG[SVG diagram]
+  end
+
+  AI -->|REST ADF| Page
+  Dev -->|slash command| Editor
+  Editor -->|save config| Macro
+  Page --> Macro
+  Macro --> Bridge
+  Bridge -->|read source| ViewUI
+  ViewUI --> MermaidLib
+  MermaidLib --> Sanitize
+  Sanitize --> SVG
+  Macro -.->|no API scopes| ViewUI
+```
+
+### Sequence (macro load + edit)
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor U as User
+  participant B as Browser
+  participant C as Confluence
+  participant A as App Forge
+
+  U->>B: Open page
+  B->>C: GET wiki page
+  C-->>B: HTML + macro iframe
+  B->>A: Load Custom UI
+  A->>A: view.getContext()
+  alt Has source in config/guestParams
+    A->>A: mermaid.render + DOMPurify
+    A-->>B: SVG diagram
+  else Empty source
+    A-->>B: Empty state UI
+  end
+  U->>B: Edit macro
+  B->>A: Open config modal
+  U->>A: Paste Mermaid + Save
+  A->>C: Persist config.source
+  C-->>B: Updated page
+```
+
+### State (Forge deploy cycle)
+
+```mermaid
+stateDiagram-v2
+  [*] --> LocalEdit
+  LocalEdit --> Build: npm run build
+  Build --> Deploy: forge deploy -e production
+  Deploy --> AutoUpgrade: site pulls new version
+  AutoUpgrade --> Verify: open Confluence page
+  Verify --> LocalEdit: bug / tweak
+  Verify --> Done: diagram OK
+  Done --> [*]
+
+  Deploy --> Failed: CLI / permissions error
+  Failed --> LocalEdit: fix and retry
+```
+
 ## Project layout
 
 ```
-manifest.yml          Forge app descriptor (bodied macro, zero scopes)
-static/shared/        Mermaid render + ADF body extraction
+manifest.yml          Forge app descriptor (block macro, zero scopes)
+static/shared/        Mermaid render + source extraction (config / guestParams / ADF body)
 static/view/          Macro view (page render)
-static/config/        Theme settings modal
+static/config/        Edit diagram modal (source + theme + preview)
 ```
 
 ## Privacy model
