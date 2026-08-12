@@ -69,7 +69,24 @@ The repo ships an Agent Skill that teaches models the exact ADF shape for this m
 
 Copy the folder into `~/.cursor/skills/` or `~/.claude/skills/` to use it outside this repo. Invoke with `/confluence-mermaid` or let the agent pick it up from the description.
 
-**Company Cursor (admin):** import this GitHub repo as a Team Marketplace — see [docs/TEAM-CURSOR-MARKETPLACE.md](./docs/TEAM-CURSOR-MARKETPLACE.md).
+`skills/confluence-mermaid/SKILL.md` is the canonical copy. Edit **only** that one, then mirror it into the client folders and the plugin:
+
+```bash
+npm run sync:skills
+```
+
+`npm run check:skills` fails if a mirror has drifted — useful in CI, since the plugin copy is what teammates actually receive.
+
+**Company rollout (admin):**
+
+- Cursor Team Marketplace — [docs/TEAM-CURSOR-MARKETPLACE.md](./docs/TEAM-CURSOR-MARKETPLACE.md)
+- Claude Code plugin marketplace — [docs/TEAM-CLAUDE-MARKETPLACE.md](./docs/TEAM-CLAUDE-MARKETPLACE.md)
+
+Individual Claude Code users can add it directly:
+
+```bash
+/plugin marketplace add jfernandeze/confluence-mermaid
+```
 
 **Copy-paste prompt** (if you cannot load the skill):
 

@@ -1,0 +1,23 @@
+{
+  "name": "confluence-mermaid-marketplace",
+  "owner": {
+    "name": "Jose Fernandez",
+    "email": "karruchero@hotmail.com",
+    "url": "https://github.com/jfernandeze"
+  },
+  "description": "Marketplace for the confluence-mermaid agent skill (Confluence Mermaid via ADF/API).",
+  "version": "1.1.0",
+  "plugins": [
+    {
+      "name": "confluence-mermaid",
+      "source": "./plugins/confluence-mermaid",
+      "description": "Insert and update Mermaid diagrams in Confluence Cloud via the confluence-mermaid Forge macro (block extension + guestParams/config).",
+      "version": "1.1.0",
+      "author": {
+        "name": "Jose Fernandez"
+      },
+      "category": "documentation",
+      "tags": ["confluence", "mermaid", "atlassian", "forge", "diagrams", "adf"]
+    }
+  ]
+}
