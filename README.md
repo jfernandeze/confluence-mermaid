@@ -56,6 +56,31 @@ forge install --upgrade
 3. In the config modal, paste Mermaid source and pick a theme.
 4. Save / publish.
 
+## For AI agents (Cursor / Claude)
+
+The repo ships an Agent Skill that teaches models the exact ADF shape for this macro:
+
+| Client | Path (auto-discovered in this repo) |
+|---|---|
+| Canonical | [`skills/confluence-mermaid/SKILL.md`](./skills/confluence-mermaid/SKILL.md) |
+| Cursor | [`.cursor/skills/confluence-mermaid/SKILL.md`](./.cursor/skills/confluence-mermaid/SKILL.md) |
+| Claude Code | [`.claude/skills/confluence-mermaid/SKILL.md`](./.claude/skills/confluence-mermaid/SKILL.md) |
+
+Copy the folder into `~/.cursor/skills/` or `~/.claude/skills/` to use it outside this repo. Invoke with `/confluence-mermaid` or let the agent pick it up from the description.
+
+**Copy-paste prompt** (if you cannot load the skill):
+
+```text
+When adding Mermaid to Confluence on a site with confluence-mermaid installed,
+insert a block ADF "extension" (not bodiedExtension). Use short extensionKey
+APP_ID/ENV_ID/static/mermaid-diagram. Put the same Mermaid source string in both
+parameters.guestParams.source and parameters.config.source. Do not prefix
+extensionKey with ari:cloud:ecosystem::extension/. Prefer theme "neutral".
+Avoid "/" inside Mermaid edge labels. Production test IDs:
+APP_ID=efdf9273-2980-4c7b-9039-baf6371eb8da
+ENV_ID=aa4638bc-29a8-4fd8-bbc9-634f11ccd440
+```
+
 ## Usage (AI / Confluence API)
 
 Insert a **block** Forge `extension` and put the Mermaid source in both `parameters.guestParams` and `parameters.config` (same fields the editor saves).
