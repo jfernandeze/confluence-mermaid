@@ -54,7 +54,9 @@ flowchart LR
 
 ## Usage (AI / Confluence API)
 
-Insert a **bodied** Forge macro whose body contains a `mermaid` code block. Example ADF shape:
+Insert a **bodied** Forge macro whose body contains a `mermaid` code block.
+
+Important: use the **short** `extensionKey` (no `ari:cloud:ecosystem::extension/` prefix). The full ARI form often yields `Error loading the extension!` when inserted via API.
 
 ```json
 {
@@ -62,8 +64,12 @@ Insert a **bodied** Forge macro whose body contains a `mermaid` code block. Exam
   "attrs": {
     "layout": "default",
     "extensionType": "com.atlassian.ecosystem",
-    "extensionKey": "ari:cloud:ecosystem::extension/<APP_ID>/<ENV_ID>/static/mermaid-diagram",
+    "extensionKey": "<APP_ID>/<ENV_ID>/static/mermaid-diagram",
+    "text": "Mermaid",
+    "localId": "<uuid>",
     "parameters": {
+      "layout": "bodiedExtension",
+      "forgeEnvironment": "PRODUCTION",
       "localId": "<uuid>",
       "extensionId": "ari:cloud:ecosystem::extension/<APP_ID>/<ENV_ID>/static/mermaid-diagram",
       "extensionTitle": "Mermaid"
@@ -81,7 +87,10 @@ Insert a **bodied** Forge macro whose body contains a `mermaid` code block. Exam
 }
 ```
 
-Custom-config-only macros (source stored only in `parameters.config`) are unreliable via API and are no longer the primary path.
+For this deployed app on evalua production:
+
+- `APP_ID` = `efdf9273-2980-4c7b-9039-baf6371eb8da`
+- `ENV_ID` = `aa4638bc-29a8-4fd8-bbc9-634f11ccd440`
 
 ## Project layout
 
