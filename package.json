@@ -10,7 +10,9 @@
     "build:config": "npm run build --prefix static/config",
     "install:all": "npm install --prefix static/view && npm install --prefix static/config",
     "deploy": "npm run build && forge deploy",
-    "lint": "forge lint"
+    "lint": "forge lint",
+    "sync:skills": "node scripts/sync-skills.mjs",
+    "check:skills": "node scripts/sync-skills.mjs --check"
   },
   "engines": {
     "node": ">=20"
