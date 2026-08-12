@@ -34,8 +34,7 @@ export default function App() {
           setSvg('');
           setStatus({
             kind: 'empty',
-            message:
-              'Add Mermaid source inside this macro body (a ```mermaid code block works best), then publish.',
+            message: 'No diagram yet. Edit this macro and paste Mermaid source.',
           });
           return;
         }
@@ -52,7 +51,7 @@ export default function App() {
         if (!cancelled) {
           setStatus({
             kind: 'error',
-            message: err?.message || 'Failed to load macro content.',
+            message: err?.message || 'Failed to load macro configuration.',
           });
         }
       }

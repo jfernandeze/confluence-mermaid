@@ -2,10 +2,9 @@ modules:
   macro:
     - key: mermaid-diagram
       title: Mermaid
-      description: Mermaid diagrams as code in the macro body. Rendered in your browser, never sent anywhere.
+      description: Mermaid diagrams as code. Rendered in your browser, never sent anywhere.
       resource: main
-      # Bodied so humans and AI can put Mermaid source in the macro body (ADF/API-friendly).
-      layout: bodied
+      layout: block
       categories:
         - visuals
         - development
@@ -14,10 +13,12 @@ modules:
         - anonymous
       config:
         resource: config
-        title: Diagram settings
-        openOnInsert: false
-        viewportSize: small
+        title: Edit diagram
+        openOnInsert: true
+        viewportSize: xlarge
         parameters:
+          - identifier: source
+            type: string
           - identifier: theme
             type: string
 
@@ -29,6 +30,7 @@ resources:
 
 app:
   # Run `forge register` once — it replaces this id with yours.
+  # Keep personal app ids out of commits/PRs.
   id: ari:cloud:ecosystem::app/00000000-0000-0000-0000-000000000000
   runtime:
     name: nodejs22.x

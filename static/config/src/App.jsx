@@ -1,9 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { view } from '@forge/bridge';
-import { normalizeTheme } from '../../shared/renderMermaid.js';
+import {
+  STARTER_DIAGRAM,
+  normalizeTheme,
+  renderMermaid,
+} from '../../shared/renderMermaid.js';
+import { readMacroSource } from '../../shared/extractMermaid.js';
 
 const THEME_OPTIONS = [
-  { value: 'default', label: 'Default (auto light/dark)' },
+  { value: 'default', label: 'Default' },
   { value: 'neutral', label: 'Neutral' },
   { value: 'dark', label: 'Dark' },
   { value: 'forest', label: 'Forest' },
@@ -11,29 +16,72 @@ const THEME_OPTIONS = [
 ];
 
 export default function App() {
+  const [source, setSource] = useState(STARTER_DIAGRAM);
   const [theme, setTheme] = useState('default');
+  const [preview, setPreview] = useState({ svg: '', error: null, empty: false });
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    view.getContext().then((context) => {
-      const current = context?.extension?.config?.theme;
-      if (current) setTheme(normalizeTheme(current));
-    });
+    let cancelled = false;
+
+    async function hydrate() {
+      try {
+        const context = await view.getContext();
+        if (cancelled) return;
+        const existing = readMacroSource(context);
+        if (existing) setSource(existing);
+        const currentTheme =
+          context?.extension?.config?.theme ||
+          context?.extension?.guestParams?.theme;
+        if (currentTheme) setTheme(normalizeTheme(currentTheme));
+      } finally {
+        if (!cancelled) setReady(true);
+      }
+    }
+
+    hydrate();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  useEffect(() => {
+    if (!ready) return undefined;
+
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const result = await renderMermaid(source, theme);
+      if (!cancelled) setPreview(result);
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [source, theme, ready]);
+
+  const canSave = useMemo(
+    () => source.trim().length > 0 && !preview.error,
+    [source, preview.error]
+  );
+
   async function onSave() {
-    if (busy) return;
+    if (!canSave || busy) return;
     setBusy(true);
-    setError('');
     try {
       await view.submit({
         config: {
+          source,
           theme: normalizeTheme(theme),
         },
       });
     } catch (err) {
-      setError(err?.message || 'Could not save settings.');
+      setPreview({
+        svg: '',
+        empty: false,
+        error: err?.message || 'Could not save the diagram.',
+      });
       setBusy(false);
     }
   }
@@ -43,37 +91,54 @@ export default function App() {
   }
 
   return (
-    <div className="layout compact">
+    <div className="layout">
       <header className="toolbar">
         <div>
-          <h1>Diagram settings</h1>
-          <p>
-            Put Mermaid source in the macro body (preferably a <code>mermaid</code> code block).
-            This dialog only changes the theme.
-          </p>
+          <h1>Mermaid diagram</h1>
+          <p>Source stays on the page. Rendering happens in the browser only.</p>
+        </div>
+        <div className="actions">
+          <label className="field inline">
+            <span>Theme</span>
+            <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+              {THEME_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="button" className="ghost" onClick={onCancel} disabled={busy}>
+            Cancel
+          </button>
+          <button type="button" className="primary" onClick={onSave} disabled={!canSave || busy}>
+            {busy ? 'Saving…' : 'Save diagram'}
+          </button>
         </div>
       </header>
 
-      <label className="field">
-        <span>Theme</span>
-        <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-          {THEME_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="panes">
+        <section className="pane">
+          <div className="pane-label">Source</div>
+          <textarea
+            value={source}
+            onChange={(e) => setSource(e.target.value)}
+            spellCheck={false}
+            aria-label="Mermaid source"
+            placeholder="flowchart LR&#10;  A --> B"
+          />
+        </section>
 
-      {error && <div className="state error">{error}</div>}
-
-      <div className="actions">
-        <button type="button" className="ghost" onClick={onCancel} disabled={busy}>
-          Cancel
-        </button>
-        <button type="button" className="primary" onClick={onSave} disabled={busy}>
-          {busy ? 'Saving…' : 'Save'}
-        </button>
+        <section className="pane">
+          <div className="pane-label">Preview</div>
+          <div className="preview">
+            {preview.empty && <div className="state">Paste Mermaid source to preview.</div>}
+            {preview.error && <div className="state error">{preview.error}</div>}
+            {!preview.empty && !preview.error && (
+              <div className="diagram" dangerouslySetInnerHTML={{ __html: preview.svg }} />
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );
