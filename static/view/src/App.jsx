@@ -2,6 +2,42 @@ import { useEffect, useState } from 'react';
 import { view } from '@forge/bridge';
 import { normalizeTheme, renderMermaid } from '../../shared/renderMermaid.js';
 
+function decodeEntities(value) {
+  if (!value || typeof value !== 'string') return '';
+  return value
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
+function readConfig(context) {
+  const extension = context?.extension || {};
+  const candidates = [
+    extension.config,
+    extension.macro?.params,
+    extension.parameters?.config,
+    extension.parameters,
+  ].filter(Boolean);
+
+  for (const candidate of candidates) {
+    const source = candidate.source ?? candidate.Source;
+    if (typeof source === 'string' && source.trim()) {
+      return {
+        source: decodeEntities(source),
+        theme: candidate.theme ?? candidate.Theme,
+      };
+    }
+  }
+
+  return {
+    source: '',
+    theme: undefined,
+  };
+}
+
 export default function App() {
   const [status, setStatus] = useState({ kind: 'loading', message: 'Loading diagram…' });
   const [svg, setSvg] = useState('');
@@ -12,11 +48,19 @@ export default function App() {
     async function load() {
       try {
         const context = await view.getContext();
-        const config = context?.extension?.config || {};
-        const source = config.source || '';
-        const theme = normalizeTheme(config.theme);
+        const { source, theme: configTheme } = readConfig(context);
 
-        const result = await renderMermaid(source, theme);
+        let theme = configTheme;
+        if (!theme || theme === 'default') {
+          try {
+            const colorMode = await view.theme?.getColorMode?.();
+            if (colorMode === 'dark') theme = 'dark';
+          } catch {
+            // Theme bridge is optional; keep configured/default theme.
+          }
+        }
+
+        const result = await renderMermaid(source, normalizeTheme(theme));
         if (cancelled) return;
 
         if (result.empty) {

@@ -6,7 +6,7 @@
   --danger: #ae2a19;
   --danger-bg: #ffeceb;
   --border: #dcdfe4;
-  --radius: 8px;
+  --radius: 10px;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
@@ -38,27 +38,31 @@ body,
 .shell {
   width: 100%;
   min-width: 100%;
-  padding: 4px 0;
+  padding: 8px 0 12px;
 }
 
 .diagram {
   width: 100%;
   overflow: auto;
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
 }
 
 .diagram svg {
   max-width: 100%;
   height: auto;
   display: block;
+  margin: 0 auto;
 }
 
 .state {
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .state.error {
