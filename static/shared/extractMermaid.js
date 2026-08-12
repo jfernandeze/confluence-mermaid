@@ -11,6 +11,7 @@ function decodeEntities(value) {
 
 function collectText(node) {
   if (!node) return '';
+  if (node.type === 'hardBreak') return '\n';
   if (typeof node.text === 'string') return node.text;
   if (!Array.isArray(node.content)) return '';
   return node.content.map(collectText).join('');
@@ -32,6 +33,7 @@ function walkCodeBlocks(node, out) {
 /**
  * Prefer a ```mermaid code block from the bodied macro ADF.
  * Fall back to any code block, then to plain text in the body.
+ * Preserves hardBreak nodes as newlines (required by Mermaid).
  */
 export function extractMermaidFromAdf(body) {
   if (!body || typeof body !== 'object') return '';
