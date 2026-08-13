@@ -29,7 +29,7 @@ In the marketplace settings, set **confluence-mermaid** to:
 | **Default On** | Installed for everyone; they can opt out |
 | **Required** | Always on; cannot uninstall |
 
-For evalua: start with **Default On** or **Required** if everyone should insert Mermaid via AI.
+Suggested: start with **Default On**, or **Required** if everyone should insert Mermaid via AI.
 
 ## How teammates use it
 

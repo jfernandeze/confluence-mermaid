@@ -9,7 +9,7 @@ description: >-
 
 # confluence-mermaid (Confluence Cloud)
 
-**Skill version:** 1.1.1
+**Skill version:** 1.1.2
 
 Render Mermaid in Confluence with the **confluence-mermaid** Forge app (block macro).
 Source is stored in macro **config** / **guestParams** and rendered client-side.
@@ -30,12 +30,12 @@ Do this **before** writing any ADF. Four values; do not ask the user for what yo
 
 | Value | How to get it |
 |---|---|
-| `cloudId` | `getAccessibleAtlassianResources` → `id` of the target site. A site hostname (`evalua.atlassian.net`) also works as `cloudId` in most tools. |
+| `cloudId` | `getAccessibleAtlassianResources` → `id` of the target site. A site hostname (`yoursite.atlassian.net`) also works as `cloudId` in most tools. |
 | `spaceId` | `getConfluenceSpaces` with `keys: "<SPACE_KEY>"` → `id`. For a **personal** space the key is `~<accountId>`; get the accountId from `atlassianUserInfo`. |
 | `parentId` | Optional. Omit to nest under the space homepage. |
 | `APP_ID` / `ENV_ID` | Table below for this org; see *Other sites* if the target is a different install. |
 
-### Production IDs (evalua / published app)
+### Production IDs (published app)
 
 | | |
 |---|---|

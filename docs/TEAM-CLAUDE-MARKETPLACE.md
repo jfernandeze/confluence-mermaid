@@ -14,8 +14,8 @@ plugins/confluence-mermaid/
 
 ## Prerequisites
 
-- The Forge app is installed on the target Confluence site (`evalua.atlassian.net`). Without it the
-  skill produces pages that show *Error loading the extension!*
+- The Forge app is installed on the target Confluence site. Without it the skill produces pages that
+  show *Error loading the extension!*
 - Repo reachable by teammates: https://github.com/jfernandeze/confluence-mermaid
   (private repos require the user's git credentials to have access)
 
@@ -72,8 +72,8 @@ has to add anything. That is an IT action, not a repo change.
 | macOS | `/Library/Application Support/ClaudeCode/managed-settings.json` |
 | Linux | `/etc/claude-code/managed-settings.json` |
 
-For evalua: start with **A** on the repos where people document architecture, and move to **B** if
-adoption is good.
+Suggested rollout: start with **A** on the repos where people document architecture, and move to
+**B** if adoption is good.
 
 ## Update the skill later
 
@@ -100,7 +100,7 @@ Install, then check that `/confluence-mermaid` appears in the skill list.
 ## Naming note
 
 The marketplace is named `confluence-mermaid-marketplace`, matching the Cursor one. If you later
-publish more org skills, rename it to something broader (for example `evalua-tools`) and list the
+publish more org skills, rename it to something broader (for example `acme-tools`) and list the
 plugins together — a marketplace can hold many plugins, and each user can register only **one**
 marketplace per name. Use the `renames` field in `marketplace.json` so existing installs migrate
 automatically.

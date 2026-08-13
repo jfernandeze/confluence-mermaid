@@ -43,12 +43,12 @@ skills/confluence-mermaid/SKILL.md          canonical — the only file you edit
 non-zero if any has drifted — wire it into CI, because the plugin copy is the one that ships and it
 has silently gone stale before.
 
-| Channel | Reaches | Updates | Status |
-|---|---|---|---|
-| Claude Code plugin marketplace | Claude Code users | `claude plugin marketplace update` (pulls from GitHub) | Live — installed and verified at 1.1.0 |
-| claude.ai Organization skills | claude.ai / Desktop / Cowork users | Manual re-upload of a zip | Live on the evalua org |
-| Cursor Team Marketplace | Cursor users | Dashboard refresh | Structure in repo; import not yet done |
-| Atlassian Marketplace (the app) | Any company's Confluence | Atlassian review | **Not submitted** — see [MARKETPLACE.md](../MARKETPLACE.md) |
+| Channel | Reaches | Updates |
+|---|---|---|
+| Claude Code plugin marketplace | Claude Code users | `claude plugin marketplace update` (pulls from GitHub) |
+| claude.ai Organization skills | claude.ai / Desktop / Cowork users | Manual re-upload of a zip |
+| Cursor Team Marketplace | Cursor users | Dashboard refresh, or Auto Refresh via the GitHub App |
+| Atlassian Marketplace (the app) | Any company's Confluence | Atlassian review of a new app version |
 
 Per-channel instructions: [TEAM-CLAUDE-MARKETPLACE.md](./TEAM-CLAUDE-MARKETPLACE.md),
 [TEAM-CURSOR-MARKETPLACE.md](./TEAM-CURSOR-MARKETPLACE.md).
@@ -98,9 +98,9 @@ connector is what actually writes to Confluence.
    and is the one that gets forgotten — the version line inside the skill is what lets you tell,
    later, which copy someone actually got.
 
-The organization has Cowork-only users, Claude Code-only users, and people on both, so both channels
-must stay live and people in the overlap will see the skill twice. That is harmless while the
-versions match, which is what step 4 enforces.
+An organization with both Cowork users and Claude Code users has to keep both channels live, and
+anyone using both products will see the skill twice. That is harmless while the versions match,
+which is what step 4 enforces — and why the skill states its own version.
 
 ## Verified vs not
 
