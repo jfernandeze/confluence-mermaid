@@ -77,10 +77,11 @@ npm run sync:skills
 
 `npm run check:skills` fails if a mirror has drifted — useful in CI, since the plugin copy is what teammates actually receive.
 
-**Company rollout (admin):**
+**Company rollout (admin):** start with [docs/DISTRIBUTION.md](./docs/DISTRIBUTION.md) — it maps the two products (Forge app vs. skill) onto their channels. Per-channel detail:
 
-- Cursor Team Marketplace — [docs/TEAM-CURSOR-MARKETPLACE.md](./docs/TEAM-CURSOR-MARKETPLACE.md)
 - Claude Code plugin marketplace — [docs/TEAM-CLAUDE-MARKETPLACE.md](./docs/TEAM-CLAUDE-MARKETPLACE.md)
+- Cursor Team Marketplace — [docs/TEAM-CURSOR-MARKETPLACE.md](./docs/TEAM-CURSOR-MARKETPLACE.md)
+- claude.ai Organization skills — upload a zip of `skills/confluence-mermaid/`
 
 Individual Claude Code users can add it directly:
 
