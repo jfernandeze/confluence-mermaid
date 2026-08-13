@@ -131,6 +131,9 @@ round-trip is clean, hand the page URL to the user rather than claiming the diag
 - Avoid `/` inside `|edge label|` text on Mermaid 11 (`REST ADF`, not `REST / ADF`).
 - Avoid `-->` inside a node label — `A[from --> to]` breaks the parser. Write `A[from to]`.
 - Quote labels containing `(`, `)`, `:` or `,`: `A["Config (modal)"]`.
+- **Prefer `TB` over `LR` for chains longer than ~4 nodes.** The macro scales the SVG to the page
+  column width, so a wide `flowchart LR` shrinks until the labels are unreadable at 100% zoom.
+  Diagrams that grow downwards (`TB`, `sequenceDiagram`, `stateDiagram-v2`) keep their text size.
 - Keep diagrams readable; split into multiple macros if huge.
 - For humans editing later: they can use `/mermaid` and the config modal (same `source` field).
 
