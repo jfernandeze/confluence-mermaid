@@ -12,7 +12,8 @@
     "deploy": "npm run build && forge deploy",
     "lint": "forge lint",
     "sync:skills": "node scripts/sync-skills.mjs",
-    "check:skills": "node scripts/sync-skills.mjs --check"
+    "check:skills": "node scripts/sync-skills.mjs --check",
+    "pack:skill": "git archive --format=zip --prefix=confluence-mermaid/ HEAD:skills/confluence-mermaid -o confluence-mermaid-skill.zip"
   },
   "engines": {
     "node": ">=20"

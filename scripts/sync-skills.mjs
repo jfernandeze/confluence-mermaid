@@ -37,7 +37,32 @@ for (const target of MIRRORS) {
   console.log(`synced: ${target}`);
 }
 
+// The skill states its own version so a copy in the wild can be identified.
+// Every manifest that declares a version must agree with it, or a channel can
+// ship content from one release under the version number of another.
+const declared = source.match(/^\*\*Skill version:\*\*\s*(\S+)/m)?.[1];
+const manifests = [
+  ['plugins/confluence-mermaid/.claude-plugin/plugin.json', (j) => j.version],
+  ['plugins/confluence-mermaid/.cursor-plugin/plugin.json', (j) => j.version],
+  ['.claude-plugin/marketplace.json', (j) => j.version],
+  ['.claude-plugin/marketplace.json', (j) => j.plugins[0].version],
+  ['.cursor-plugin/marketplace.json', (j) => j.metadata?.version],
+];
+
+if (!declared) {
+  console.error(`version: ${SOURCE} has no "**Skill version:** X.Y.Z" line`);
+  drifted += 1;
+} else {
+  for (const [file, pick] of manifests) {
+    const found = pick(JSON.parse(readFileSync(file, 'utf8')));
+    if (found !== declared) {
+      console.error(`version: ${file} says ${found}, skill says ${declared}`);
+      drifted += 1;
+    }
+  }
+}
+
 if (drifted) {
-  console.error('Run `npm run sync:skills` to update the mirrors.');
+  console.error('Run `npm run sync:skills` and align the version numbers.');
   process.exit(1);
 }

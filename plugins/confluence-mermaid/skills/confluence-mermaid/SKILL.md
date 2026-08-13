@@ -9,6 +9,8 @@ description: >-
 
 # confluence-mermaid (Confluence Cloud)
 
+**Skill version:** 1.1.1
+
 Render Mermaid in Confluence with the **confluence-mermaid** Forge app (block macro).
 Source is stored in macro **config** / **guestParams** and rendered client-side.
 
