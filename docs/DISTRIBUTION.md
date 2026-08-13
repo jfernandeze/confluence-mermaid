@@ -85,13 +85,22 @@ connector is what actually writes to Confluence.
 ## Release checklist for a skill change
 
 1. Edit `skills/confluence-mermaid/SKILL.md` — never a copy.
-2. `npm run sync:skills`
-3. Bump `version` in `plugins/confluence-mermaid/.claude-plugin/plugin.json`,
-   `plugins/confluence-mermaid/.cursor-plugin/plugin.json`, and `.claude-plugin/marketplace.json`.
-   Without a bump, installed users keep the cached copy.
-4. `claude plugin validate .` and `claude plugin validate ./plugins/confluence-mermaid`
-5. Commit, push to `master`.
-6. Re-upload the zip to claude.ai Organization skills.
+2. Bump the `**Skill version:**` line in that file, and the `version` in all four manifests:
+   `plugins/confluence-mermaid/.claude-plugin/plugin.json`,
+   `plugins/confluence-mermaid/.cursor-plugin/plugin.json`, `.claude-plugin/marketplace.json`
+   (both places), and `.cursor-plugin/marketplace.json`. Without a bump, installed users keep the
+   cached copy.
+3. `npm run sync:skills`
+4. `npm run check:skills` — fails on a drifted copy *or* a version that disagrees with the skill.
+5. `claude plugin validate .` and `claude plugin validate ./plugins/confluence-mermaid`
+6. Commit, push to `master`. Claude Code and Cursor users pull from here.
+7. `npm run pack:skill`, then upload the zip to claude.ai Organization skills. This step is manual
+   and is the one that gets forgotten — the version line inside the skill is what lets you tell,
+   later, which copy someone actually got.
+
+The organization has Cowork-only users, Claude Code-only users, and people on both, so both channels
+must stay live and people in the overlap will see the skill twice. That is harmless while the
+versions match, which is what step 4 enforces.
 
 ## Verified vs not
 
