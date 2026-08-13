@@ -103,12 +103,13 @@ Verified:
 - `claude plugin marketplace add` + `install` from GitHub succeed; the installed `SKILL.md` is
   byte-identical to the canonical one.
 - `check:skills` detects real drift (it caught the stale plugin copy).
+- **Visual render**, in a browser on the live page: flowchart, sequence and state all paint their
+  SVG, with correct edge labels and no *Error loading the extension!*. This also surfaced a defect
+  the round-trip assertions cannot see — wide `flowchart LR` graphs are scaled down to the column
+  width until their labels are unreadable, now covered in the skill's authoring tips.
 
 Not verified:
 
-- **Visual render.** That the Forge iframe paints an SVG has not been checked programmatically — it
-  needs a logged-in browser. A clean ADF round-trip does not prove the diagram draws; Mermaid syntax
-  errors survive it.
 - **Skill invocation from the installed plugin** in a fresh session (as opposed to the repo-local
   copy).
 - The Cursor Team Marketplace import.
