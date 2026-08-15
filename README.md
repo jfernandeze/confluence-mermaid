@@ -7,16 +7,6 @@ Free, open-source **Atlassian Forge** macro for **Confluence Cloud** that render
 - No external network calls
 - Diagram source lives in macro **config** / **guestParams** — works for humans and AI/API inserts
 
-<p align="center">
-  <img src="docs/screenshots/architecture.png" alt="Architecture flowchart rendered in Confluence Cloud" width="900" />
-</p>
-
-<p align="center">
-  <img src="docs/screenshots/sequence.png" alt="Sequence diagram rendered in Confluence Cloud" width="440" />
-  &nbsp;
-  <img src="docs/screenshots/state.png" alt="State diagram rendered in Confluence Cloud" width="440" />
-</p>
-
 ## Requirements
 
 - Node.js 20+
@@ -55,6 +45,8 @@ forge install --upgrade
 2. Type `/mermaid` and insert the **Mermaid** macro.
 3. In the config modal, paste Mermaid source and pick a theme.
 4. Save / publish.
+
+Editing an existing diagram is the same four steps: click the macro, change the text, publish.
 
 ## For AI agents (Cursor / Claude)
 
@@ -141,7 +133,11 @@ Avoid `/` inside edge labels when possible (`A -->|REST ADF| B` is safer than `A
 
 ## Example diagrams
 
-These are the kinds of sources that work well for smoke-testing (paste into the config modal, or into `guestParams.source` / `config.source` via API).
+Each example below shows the Mermaid source on the left of the story and, under it, a screenshot of
+that same source rendered by the macro inside a real Confluence page. The fenced blocks are drawn by
+GitHub; the screenshots are the app.
+
+Paste any of them into the config modal, or into `guestParams.source` / `config.source` via API.
 
 ### Architecture flowchart (subgraphs)
 
@@ -181,6 +177,10 @@ flowchart TB
   Macro -.->|no API scopes| ViewUI
 ```
 
+<p align="center">
+  <img src="docs/screenshots/architecture.png" alt="The flowchart above, rendered by the macro in a Confluence page" width="900" />
+</p>
+
 ### Sequence (macro load + edit)
 
 ```mermaid
@@ -209,6 +209,10 @@ sequenceDiagram
   C-->>B: Updated page
 ```
 
+<p align="center">
+  <img src="docs/screenshots/sequence.png" alt="The sequence diagram above, rendered by the macro in a Confluence page" width="600" />
+</p>
+
 ### State (Forge deploy cycle)
 
 ```mermaid
@@ -226,11 +230,15 @@ stateDiagram-v2
   Failed --> LocalEdit: fix and retry
 ```
 
+<p align="center">
+  <img src="docs/screenshots/state.png" alt="The state diagram above, rendered by the macro in a Confluence page" width="600" />
+</p>
+
 ## Project layout
 
 ```
 manifest.yml          Forge app descriptor (block macro, zero scopes)
-static/shared/        Mermaid render + source extraction (config / guestParams / ADF body)
+static/shared/        Mermaid render + source extraction (config / guestParams)
 static/view/          Macro view (page render)
 static/config/        Edit diagram modal (source + theme + preview)
 ```
