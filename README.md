@@ -50,6 +50,12 @@ forge install --upgrade
   <img src="docs/screenshots/demo.gif" alt="Typing /mermaid, pasting diagram source, and publishing the rendered diagram" width="900" />
 </p>
 
+The config modal keeps the source next to a live preview, so you see the diagram as you type:
+
+<p align="center">
+  <img src="docs/screenshots/config-modal.png" alt="The Edit diagram modal: Mermaid source on the left, live preview on the right, theme selector on top" width="900" />
+</p>
+
 Editing an existing diagram is the same four steps: click the macro, change the text, publish.
 
 Flowcharts, sequence diagrams, state machines, class and ER diagrams, Gantt charts, mindmaps — anything Mermaid 11 renders.
