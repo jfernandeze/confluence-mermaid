@@ -52,6 +52,18 @@ forge install --upgrade
 
 Editing an existing diagram is the same four steps: click the macro, change the text, publish.
 
+Flowcharts, sequence diagrams and state machines, all rendered by the macro in a Confluence page — plus every other diagram type Mermaid 11 supports:
+
+<p align="center">
+  <img src="docs/screenshots/architecture.png" alt="Architecture flowchart with subgraphs" width="880" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/sequence.png" alt="Sequence diagram with automatic step numbering" width="430" />
+  &nbsp;
+  <img src="docs/screenshots/state.png" alt="State machine" width="430" />
+</p>
+
 ## For AI agents (Cursor / Claude)
 
 The repo ships an Agent Skill that teaches models the exact ADF shape for this macro:
@@ -134,109 +146,6 @@ For the published production install used in testing:
 - `ENV_ID` = `aa4638bc-29a8-4fd8-bbc9-634f11ccd440`
 
 Avoid `/` inside edge labels when possible (`A -->|REST ADF| B` is safer than `A -->|REST / ADF| B` with Mermaid 11).
-
-## Example diagrams
-
-Each example below shows the Mermaid source on the left of the story and, under it, a screenshot of
-that same source rendered by the macro inside a real Confluence page. The fenced blocks are drawn by
-GitHub; the screenshots are the app.
-
-Paste any of them into the config modal, or into `guestParams.source` / `config.source` via API.
-
-### Architecture flowchart (subgraphs)
-
-```mermaid
-flowchart TB
-  subgraph Authors
-    AI[AI Cursor]
-    Dev[Developer]
-  end
-
-  subgraph ConfluenceCloud[Confluence Cloud]
-    Page[Page ADF]
-    Macro[Forge Mermaid macro]
-    Editor[Config modal]
-  end
-
-  subgraph ForgeRuntime[Forge runtime]
-    Bridge[view.getContext]
-    ViewUI[Custom UI view]
-    MermaidLib[Mermaid.js]
-    Sanitize[DOMPurify]
-  end
-
-  subgraph BrowserOut[Browser]
-    SVG[SVG diagram]
-  end
-
-  AI -->|REST ADF| Page
-  Dev -->|slash command| Editor
-  Editor -->|save config| Macro
-  Page --> Macro
-  Macro --> Bridge
-  Bridge -->|read source| ViewUI
-  ViewUI --> MermaidLib
-  MermaidLib --> Sanitize
-  Sanitize --> SVG
-  Macro -.->|no API scopes| ViewUI
-```
-
-<p align="center">
-  <img src="docs/screenshots/architecture.png" alt="The flowchart above, rendered by the macro in a Confluence page" width="900" />
-</p>
-
-### Sequence (macro load + edit)
-
-```mermaid
-sequenceDiagram
-  autonumber
-  actor U as User
-  participant B as Browser
-  participant C as Confluence
-  participant A as App Forge
-
-  U->>B: Open page
-  B->>C: GET wiki page
-  C-->>B: HTML + macro iframe
-  B->>A: Load Custom UI
-  A->>A: view.getContext()
-  alt Has source in config/guestParams
-    A->>A: mermaid.render + DOMPurify
-    A-->>B: SVG diagram
-  else Empty source
-    A-->>B: Empty state UI
-  end
-  U->>B: Edit macro
-  B->>A: Open config modal
-  U->>A: Paste Mermaid + Save
-  A->>C: Persist config.source
-  C-->>B: Updated page
-```
-
-<p align="center">
-  <img src="docs/screenshots/sequence.png" alt="The sequence diagram above, rendered by the macro in a Confluence page" width="600" />
-</p>
-
-### State (Forge deploy cycle)
-
-```mermaid
-stateDiagram-v2
-  [*] --> LocalEdit
-  LocalEdit --> Build: npm run build
-  Build --> Deploy: forge deploy -e production
-  Deploy --> AutoUpgrade: site pulls new version
-  AutoUpgrade --> Verify: open Confluence page
-  Verify --> LocalEdit: bug / tweak
-  Verify --> Done: diagram OK
-  Done --> [*]
-
-  Deploy --> Failed: CLI / permissions error
-  Failed --> LocalEdit: fix and retry
-```
-
-<p align="center">
-  <img src="docs/screenshots/state.png" alt="The state diagram above, rendered by the macro in a Confluence page" width="600" />
-</p>
 
 ## Project layout
 
