@@ -46,6 +46,10 @@ forge install --upgrade
 3. In the config modal, paste Mermaid source and pick a theme.
 4. Save / publish.
 
+<p align="center">
+  <img src="docs/screenshots/demo.gif" alt="Typing /mermaid, pasting diagram source, and publishing the rendered diagram" width="900" />
+</p>
+
 Editing an existing diagram is the same four steps: click the macro, change the text, publish.
 
 ## For AI agents (Cursor / Claude)
