@@ -52,17 +52,7 @@ forge install --upgrade
 
 Editing an existing diagram is the same four steps: click the macro, change the text, publish.
 
-Flowcharts, sequence diagrams and state machines, all rendered by the macro in a Confluence page — plus every other diagram type Mermaid 11 supports:
-
-<p align="center">
-  <img src="docs/screenshots/architecture.png" alt="Architecture flowchart with subgraphs" width="880" />
-</p>
-
-<p align="center">
-  <img src="docs/screenshots/sequence.png" alt="Sequence diagram with automatic step numbering" width="430" />
-  &nbsp;
-  <img src="docs/screenshots/state.png" alt="State machine" width="430" />
-</p>
+Flowcharts, sequence diagrams, state machines, class and ER diagrams, Gantt charts, mindmaps — anything Mermaid 11 renders.
 
 ## For AI agents (Cursor / Claude)
 
