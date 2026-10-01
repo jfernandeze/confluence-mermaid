@@ -25,6 +25,18 @@ export async function renderMermaid(source, theme = 'default') {
       securityLevel: 'strict',
       theme: resolvedTheme,
       fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif',
+      // SVG <text> scales with the iframe. htmlLabels (foreignObject) stay
+      // at CSS pixel size, so shrinking the SVG clips / overlaps words.
+      markdownAutoWrap: false,
+      flowchart: {
+        htmlLabels: false,
+        wrappingWidth: 280,
+        nodeSpacing: 36,
+        rankSpacing: 48,
+      },
+      sequence: {
+        wrap: false,
+      },
     });
     initializedFor = initKey;
   }

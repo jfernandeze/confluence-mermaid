@@ -9,7 +9,7 @@ description: >-
 
 # confluence-mermaid (Confluence Cloud)
 
-**Skill version:** 1.1.2
+**Skill version:** 1.1.3
 
 Render Mermaid in Confluence with the **confluence-mermaid** Forge app (block macro).
 Source is stored in macro **config** / **guestParams** and rendered client-side.
@@ -121,6 +121,8 @@ Re-read the page with `getConfluencePage`, `contentFormat: "adf"`, and assert fo
 - `attrs.extensionKey` has no `ari:cloud:ecosystem::extension/` prefix
 - `attrs.parameters.config.source` is non-empty
 - `attrs.parameters.guestParams.source` equals `config.source`
+- Every node/subgraph with spaces or punctuation uses a short id plus a quoted label
+  (`id["texto completo"]` / `subgraph id["titulo"]`) — unquoted titles are why text looks cut off
 
 That catches essentially every insert-time failure and needs no browser.
 
@@ -128,16 +130,48 @@ A visual check (the Forge iframe actually painting an SVG) requires a **logged-i
 a headless agent cannot do it. Only Mermaid *syntax* errors survive the assertions above, so if the
 round-trip is clean, hand the page URL to the user rather than claiming the diagram renders.
 
-## Mermaid authoring tips
+## Mermaid authoring — complete readable text
 
-- Avoid `/` inside `|edge label|` text on Mermaid 11 (`REST ADF`, not `REST / ADF`).
-- Avoid `-->` inside a node label — `A[from --> to]` breaks the parser. Write `A[from to]`.
-- Quote labels containing `(`, `)`, `:` or `,`: `A["Config (modal)"]`.
-- **Prefer `TB` over `LR` for chains longer than ~4 nodes.** The macro scales the SVG to the page
-  column width, so a wide `flowchart LR` shrinks until the labels are unreadable at 100% zoom.
-  Diagrams that grow downwards (`TB`, `sequenceDiagram`, `stateDiagram-v2`) keep their text size.
-- Keep diagrams readable; split into multiple macros if huge.
-- For humans editing later: they can use `/mermaid` and the config modal (same `source` field).
+Unquoted labels and wide `LR` diagrams are the usual reason text looks cut off,
+duplicated, or mashed (`CommitetPR pipelineo`, `Capá 1 puerta C1 pre-`).
+
+**Always:**
+
+- Short **id**, quoted **label**: `sast["SAST del repositorio"]`
+- Quoted subgraph titles: `subgraph gate["Capa 1: puerta CI pre-commit"]`
+- Intentional line breaks with `<br/>` inside quotes: `policy["Politica del pipeline<br/>si o no"]`
+- Keep each label to ~6 words or one `<br/>`. Split huge flows into **two macros**.
+- Prefer `flowchart TB` (or `TD`). Use `LR` only for 2–4 nodes.
+
+**Never:**
+
+- Spaces in the id: `SAST del[texto]` → leftover nodes, empty boxes, truncated titles
+- Unquoted subgraph: `subgraph Capa 1 puerta CI` → Mermaid keeps only `Capa`
+- Unquoted `: ( ) , /` inside `[...]`
+- `/` inside `|edge label|` (`REST ADF`, not `REST / ADF`)
+- `-->` inside a node label
+
+```text
+%% BAD — ids with spaces, unquoted titles, too wide
+flowchart LR
+  subgraph Capa 1 puerta CI pre-commit
+    SAST del repo --> Politica del pipeline
+  end
+
+%% GOOD
+flowchart TB
+  subgraph gate["Capa 1: puerta CI pre-commit"]
+    sast["SAST del repositorio"]
+    deps["Dependency scanning"]
+    policy{"Politica del pipeline"}
+    sast --> policy
+    deps --> policy
+  end
+  policy -->|No| stop["Parar pipeline"]
+  policy -->|Si| deploy["Deploy"]
+```
+
+- For humans editing later: `/mermaid` + config modal (same `source` field).
 
 ## Good starter diagrams
 
@@ -145,13 +179,13 @@ round-trip is clean, hand the page URL to the user rather than claiming the diag
 
 ```text
 flowchart TB
-  subgraph Authors
-    AI[AI]
-    Dev[Developer]
+  subgraph authors["Authors"]
+    ai["AI"]
+    dev["Developer"]
   end
-  AI -->|REST ADF| Page[Page]
-  Dev -->|slash command| Page
-  Page --> SVG[SVG]
+  ai -->|REST ADF| page["Page"]
+  dev -->|slash command| page
+  page --> svg["SVG"]
 ```
 
 **Sequence**
